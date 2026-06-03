@@ -6,6 +6,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useUserStore } from '@/stores/user'
 import { useEventyayApi } from '@/stores/eventyayapi'
 import StandardButton from '@/components/Common/StandardButton.vue'
+import { DEFAULT_PLATFORM, PLATFORM_OPTIONS } from '@/constants/platforms'
 
 // stores
 const loadingStore = useLoadingStore()
@@ -15,11 +16,10 @@ const processApi = useEventyayApi()
 
 const email = ref('')
 const password = ref('')
-const server = ref('')
+const server = ref(DEFAULT_PLATFORM.label)
 const showError = ref(false)
 const showServerError = ref(false)
 const errmessage = ref('')
-const DEFAULT_SERVER_VALUE = 'Select a Server'
 // router
 const router = useRouter()
 
@@ -40,12 +40,7 @@ if(processApi.apitoken) {
 }
 
 async function submitLogin() {
-  if (server.value === '' || server.value === DEFAULT_SERVER_VALUE) {
-    showServerError.value = true
-    return
-  }
-  if (server.value === 'Eventyay') {
-    errmessage.value = 'Please Register a Device for Eventyay'
+  if (server.value === '') {
     showServerError.value = true
     return
   }
@@ -74,7 +69,7 @@ async function submitLogin() {
 }
 
 function registerDevice() {
-  if (server.value === '' || server.value === 'Select a Server') {
+  if (server.value === '') {
     errmessage.value = 'Please select a server first'
     showServerError.value = true
     return
@@ -110,9 +105,13 @@ onMounted(() => {
         <div>
           <label for="select">Select a Server</label>
           <select id="select" v-model="server" class="mt-2 block w-full">
-            <option>Open-Event</option>
-            <option>Eventyay</option>
-            <option>Testing</option>
+            <option
+              v-for="platform in PLATFORM_OPTIONS"
+              :key="platform.url"
+              :value="platform.label"
+            >
+              {{ platform.label }}
+            </option>
           </select>
         </div>
         <div>

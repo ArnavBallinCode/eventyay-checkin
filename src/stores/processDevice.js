@@ -1,6 +1,7 @@
 import { useApiStore } from '@/stores/api'
 import { useCameraStore } from '@/stores/camera'
 import { useEventyayApi } from '@/stores/eventyayapi'
+import { getPlatformApiBaseUrl } from '@/constants/platforms'
 import appPackage from '../../package.json'
 
 import { mande } from 'mande'
@@ -309,7 +310,7 @@ export const useProcessDeviceStore = defineStore('processDevice', () => {
         token: qrData.token,
 		...deviceInfo
       }
-      let url = qrData.url
+      let url = getPlatformApiBaseUrl(processApi.servername)
       const api = mande(url, { headers: { 'Content-Type': 'application/json' } })
       const response = await api.post('/api/v1/device/initialize', payload)
       if (response) {
